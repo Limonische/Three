@@ -5,7 +5,9 @@ import '../sass/styles.sass';
 
 // Libraries
 import * as THREE from 'three';
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+// import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 // Modules
@@ -15,19 +17,20 @@ const onLoad = () => {
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     const controls = new OrbitControls(camera, renderer.domElement);
-    const loader = new FBXLoader();
 
-    let barrel = null;
+    // const fbxLoader = new FBXLoader();
+    const objLoader = new OBJLoader();
+    const mtlLoader = new MTLLoader();
 
-    camera.position.y = 100;
-    camera.position.z = 100;
+    camera.position.y = 300;
+    camera.position.z = 300;
     controls.update();
 
     renderer.setClearColor('#e5e5e5');
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    controls.minDistance = 100;
-    controls.maxDistance = 400;
+    controls.minDistance = 400;
+    controls.maxDistance = 700;
 
     document.body.appendChild(renderer.domElement);
 
@@ -37,16 +40,22 @@ const onLoad = () => {
         camera.updateProjectionMatrix();
     });
 
-    loader.load('../models/barrel.FBX', object => {
-        barrel = object;
+    mtlLoader.load('../models/Чайник.mtl', materials => {
+        materials.preload();
+        objLoader.setMaterials(materials);
 
-        scene.add(barrel);
+        objLoader.load('../models/Чайник.obj', object => {
+            console.log(object);
+            object.rotation.x = -2;
+            scene.add(object);
+        });
     });
 
-    const light = new THREE.PointLight('#ffffff', 10, 1500);
+    const light = new THREE.PointLight('#ffffff', 5, 1500);
 
     light.position.set(250, 300, 400);
-    scene.add(light);
+    camera.add(light);
+    scene.add(camera);
 
     const animate = () => {
         requestAnimationFrame(animate);
