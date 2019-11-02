@@ -40,11 +40,11 @@ const onLoad = () => {
         camera.updateProjectionMatrix();
     });
 
-    mtlLoader.load('../models/Чайник.mtl', materials => {
+    mtlLoader.load('../models/teapot.mtl', materials => {
         materials.preload();
         objLoader.setMaterials(materials);
 
-        objLoader.load('../models/Чайник.obj', object => {
+        objLoader.load('../models/teapot.obj', object => {
             console.log(object);
             object.rotation.x = -2;
             scene.add(object);
